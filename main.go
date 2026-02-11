@@ -9,10 +9,10 @@ func main() {
 
 	fmt.Println(EurRub)
 
-/*	var str string
+	var str string
 	fmt.Print("Введите текст: ")
 	fmt.Scan(&str)
 
 	fmt.Println("Вы ввели данный текст:",str)
-*/
+
 	}
