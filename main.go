@@ -21,5 +21,5 @@ func main() {
 }
 
 func convertCurrency (number float64,currency1 string,currency2 string) float64{
-
+	return 0
 }
