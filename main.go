@@ -15,4 +15,10 @@ func main() {
 
 	fmt.Println("Вы ввели данный текст:",str)
 
+	
+
+	}
+
+	func convertCurrency (number float64,currency1 string,currency2 string) float64 {
+		
 	}
