@@ -2,6 +2,7 @@ package main
 
 import "fmt"
 
+// Функция для ввода текста
 func getText() {
 	var str string
 	fmt.Print("Введите текст: ")
@@ -70,39 +71,45 @@ func getTargetCurrency(sourceCurrency string) string {
 	}
 }
 
-// Функция конвертации валюты
-func convertCurrency(amount float64, fromCurrency string, toCurrency string) float64 {
-	const UsdEur = 0.85
-	const UsdRub = 76.79
-	const EurRub = UsdRub / UsdEur
-	const EurUsd = 1 / UsdEur
-	const RubUsd = 1 / UsdRub
-	const RubEur = 1 / EurRub
+// Функция для создания map с курсами обмена между валютами
+func getExchangeRates() map[[2]string]float64 {
+	rates := make(map[[2]string]float64)
 
-	switch {
-	case fromCurrency == "RUB" && toCurrency == "USD":
-		return amount * RubUsd
-	case fromCurrency == "RUB" && toCurrency == "EUR":
-		return amount * RubEur
-	case fromCurrency == "USD" && toCurrency == "RUB":
-		return amount * UsdRub
-	case fromCurrency == "USD" && toCurrency == "EUR":
-		return amount * UsdEur
-	case fromCurrency == "EUR" && toCurrency == "RUB":
-		return amount * EurRub
-	case fromCurrency == "EUR" && toCurrency == "USD":
-		return amount * EurUsd
-	default:
-		return 0
+	// Курсы для конвертации из RUB
+	rates[[2]string{"RUB", "USD"}] = 1.0 / 76.79          // RUB -> USD
+	rates[[2]string{"RUB", "EUR"}] = 1.0 / (76.79 / 0.85) // RUB -> EUR
+
+	// Курсы для конвертации из USD
+	rates[[2]string{"USD", "RUB"}] = 76.79 // USD -> RUB
+	rates[[2]string{"USD", "EUR"}] = 0.85  // USD -> EUR
+
+	// Курсы для конвертации из EUR
+	rates[[2]string{"EUR", "RUB"}] = 76.79 / 0.85 // EUR -> RUB
+	rates[[2]string{"EUR", "USD"}] = 1.0 / 0.85   // EUR -> USD
+
+	return rates
+}
+
+// Функция конвертации валюты с использованием map
+func convertCurrency(amount float64, fromCurrency string, toCurrency string) float64 {
+	rates := getExchangeRates()
+
+	// Получаем курс из map по паре валют
+	rate, exists := rates[[2]string{fromCurrency, toCurrency}]
+	if !exists {
+		return 0 // Если курс не найден
 	}
+
+	return amount * rate
 }
 
 func main() {
+	// Получаем курсы валют
+	rates := getExchangeRates()
+
 	// Показываем курс EUR/RUB
-	const UsdEur = 0.85
-	const UsdRub = 76.79
-	const EurRub = UsdRub / UsdEur
-	fmt.Printf("Курс EUR/RUB: %.2f\n", EurRub)
+	eurRubRate := rates[[2]string{"EUR", "RUB"}]
+	fmt.Printf("Курс EUR/RUB: %.2f\n", eurRubRate)
 
 	// Дополнительная функция из задания
 	getText()
